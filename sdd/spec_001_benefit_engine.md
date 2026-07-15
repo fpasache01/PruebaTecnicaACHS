@@ -239,6 +239,114 @@ Suggested `.devcontainer/devcontainer.json`:
 }
 ```
 
+## DDD/TDD Structure
+
+Use a small Domain-Driven Design structure while keeping the deliverable simple enough for the technical interview.
+
+### Domain Model
+
+The benefit engine belongs to the domain layer. It must not depend on frameworks, files, databases, HTTP, environment variables, or UI code.
+
+Recommended domain concepts:
+
+- `BenefitEngine`: pure domain service that calculates the benefit.
+- `BenefitType`: domain enum or union for `INDEMNIZACION`, `PENSION_PARCIAL`, `PENSION_TOTAL`, and `NINGUNO`.
+- `PaymentPeriodicity`: domain enum or union for `UNICO`, `MENSUAL`, and `null`.
+- `BenefitCalculationInput`: input shape with `sbm`, `grado`, and optional `granInvalidez`.
+- `BenefitCalculationResult`: output shape with `tipoBeneficio`, `monto`, and `periodicidad`.
+- `IndemnityFactorTable`: explicit domain data for the indemnity thresholds and factors.
+
+Recommended folder structure if using multiple files:
+
+```text
+src/
+  domain/
+    benefit/
+      benefit_engine.ts
+      benefit_types.ts
+      indemnity_factor_table.ts
+tests/
+  unit/
+    domain/
+      benefit/
+        benefit_engine.test.ts
+```
+
+For this challenge, a flat two-file structure is also acceptable:
+
+```text
+benefit_engine.ts
+benefit_engine.test.ts
+```
+
+If the evaluator requires a single `.ts` file or Gist, keep the same conceptual sections inside one file:
+
+1. Domain types.
+2. Factor table.
+3. Validation helpers.
+4. `calcularBeneficio`.
+5. Unit tests.
+
+### Preferred Project Scaffolding
+
+Use this structure for a cleaner DDD/TDD implementation:
+
+```text
+.
+├── src/
+│   └── domain/
+│       └── benefit/
+│           ├── benefit_engine.ts
+│           ├── benefit_types.ts
+│           └── indemnity_factor_table.ts
+├── tests/
+│   └── unit/
+│       └── domain/
+│           └── benefit/
+│               └── benefit_engine.test.ts
+├── sdd/
+│   └── spec_001_benefit_engine.md
+├── .devcontainer/
+│   └── devcontainer.json
+├── package.json
+└── tsconfig.json
+```
+
+Structure rules:
+
+- `src/domain/benefit` contains only production domain code.
+- `tests/unit/domain/benefit` mirrors the domain folder structure for unit tests.
+- Tests must import from `src/domain/benefit`, not from root compatibility files.
+- Keep root-level compatibility files only if the evaluator wants a single obvious entrypoint.
+- Do not place test files inside `src` unless the project explicitly follows colocated test conventions.
+
+### TDD Workflow
+
+Develop the engine test-first:
+
+1. Write failing tests for the main benefit thresholds: `<15`, `15`, `40`, and `70`.
+2. Implement the minimum calculation logic to pass those tests.
+3. Add failing tests for every indemnity factor threshold.
+4. Refactor the factor logic into explicit table-driven domain data.
+5. Add failing tests for `granInvalidez`.
+6. Add failing tests for invalid input validation.
+7. Run the full test suite and typecheck before considering the requirement complete.
+
+The TDD cycle should follow:
+
+```text
+Red -> Green -> Refactor
+```
+
+### Design Rules
+
+- Keep `calcularBeneficio` deterministic and side-effect free.
+- Keep all business constants named and visible.
+- Prefer table-driven rules over long conditional chains for indemnity factors.
+- Keep validation close to the domain function.
+- Do not introduce application, infrastructure, persistence, or controller layers unless the project grows beyond this kata.
+- Tests should describe business behavior, not implementation details.
+
 ## Test Plan
 
 The test plan must prove that the calculation engine follows the benefit thresholds, factor table, pension percentages, validation rules, and documented normative differences.
