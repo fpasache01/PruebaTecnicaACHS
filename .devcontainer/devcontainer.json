@@ -2,6 +2,7 @@
   "name": "achs-benefit-engine",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
   "postCreateCommand": "npm install",
+  "forwardPorts": [3000],
   "customizations": {
     "vscode": {
       "extensions": [
