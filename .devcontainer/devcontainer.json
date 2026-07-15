@@ -1,0 +1,13 @@
+{
+  "name": "achs-benefit-engine",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vitest.explorer",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  }
+}
