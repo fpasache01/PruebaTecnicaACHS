@@ -1,0 +1,26 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/typescript-node:22
+    command: sleep infinity
+    volumes:
+      - ..:/workspaces/PruebaTecnicaACHS:cached
+    environment:
+      DATABASE_URL: postgres://achs:achs@postgres:5432/achs_benefits
+      RULE_STORE: postgres
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: achs_benefits
+      POSTGRES_USER: achs
+      POSTGRES_PASSWORD: achs
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

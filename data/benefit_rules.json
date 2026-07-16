@@ -1,0 +1,253 @@
+[
+  {
+    "id": "no-benefit",
+    "name": "No benefit below 15%",
+    "priority": 100,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 0,
+      "gradoMaxExclusive": 15
+    },
+    "outcome": {
+      "tipoBeneficio": "NINGUNO",
+      "periodicidad": null,
+      "amount": {
+        "kind": "FIXED",
+        "value": 0
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-15",
+    "name": "Indemnity factor from 15%",
+    "priority": 110,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 15,
+      "gradoMaxExclusive": 17.5
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 1.5
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-17-5",
+    "name": "Indemnity factor from 17.5%",
+    "priority": 111,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 17.5,
+      "gradoMaxExclusive": 20
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 3
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-20",
+    "name": "Indemnity factor from 20%",
+    "priority": 112,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 20,
+      "gradoMaxExclusive": 22.5
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 4.5
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-22-5",
+    "name": "Indemnity factor from 22.5%",
+    "priority": 113,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 22.5,
+      "gradoMaxExclusive": 25
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 6
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-25",
+    "name": "Indemnity factor from 25%",
+    "priority": 114,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 25,
+      "gradoMaxExclusive": 27.5
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 7.5
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-27-5",
+    "name": "Indemnity factor from 27.5%",
+    "priority": 115,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 27.5,
+      "gradoMaxExclusive": 30
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 9
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-30",
+    "name": "Indemnity factor from 30%",
+    "priority": 116,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 30,
+      "gradoMaxExclusive": 32.5
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 10.5
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-32-5",
+    "name": "Indemnity factor from 32.5%",
+    "priority": 117,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 32.5,
+      "gradoMaxExclusive": 35
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 12
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-35",
+    "name": "Indemnity factor from 35%",
+    "priority": 118,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 35,
+      "gradoMaxExclusive": 37.5
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 13.5
+      }
+    }
+  },
+  {
+    "id": "indemnity-factor-37-5",
+    "name": "Indemnity factor from 37.5%",
+    "priority": 119,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 37.5,
+      "gradoMaxExclusive": 40
+    },
+    "outcome": {
+      "tipoBeneficio": "INDEMNIZACION",
+      "periodicidad": "UNICO",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 15
+      }
+    }
+  },
+  {
+    "id": "partial-pension",
+    "name": "Partial disability pension",
+    "priority": 200,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 40,
+      "gradoMaxExclusive": 70
+    },
+    "outcome": {
+      "tipoBeneficio": "PENSION_PARCIAL",
+      "periodicidad": "MENSUAL",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 0.35
+      }
+    }
+  },
+  {
+    "id": "total-pension-gran-invalidez",
+    "name": "Total disability pension with gran invalidez",
+    "priority": 290,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 70,
+      "granInvalidez": true
+    },
+    "outcome": {
+      "tipoBeneficio": "PENSION_TOTAL",
+      "periodicidad": "MENSUAL",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 1
+      }
+    }
+  },
+  {
+    "id": "total-pension",
+    "name": "Total disability pension",
+    "priority": 300,
+    "enabled": true,
+    "condition": {
+      "gradoMin": 70
+    },
+    "outcome": {
+      "tipoBeneficio": "PENSION_TOTAL",
+      "periodicidad": "MENSUAL",
+      "amount": {
+        "kind": "SBM_MULTIPLIER",
+        "multiplier": 0.7
+      }
+    }
+  }
+]

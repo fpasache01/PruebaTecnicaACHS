@@ -1,6 +1,8 @@
 {
   "name": "achs-benefit-engine",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/PruebaTecnicaACHS",
   "postCreateCommand": "npm install",
   "forwardPorts": [3000],
   "customizations": {

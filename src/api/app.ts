@@ -5,13 +5,24 @@ import express, {
   type Response,
 } from 'express';
 import swaggerUi from 'swagger-ui-express';
-import { calcularBeneficio } from '../domain/benefit/benefit_engine.js';
+import { calcularBeneficioConReglas } from '../domain/benefit/benefit_engine.js';
+import {
+  parseFormulaVariable,
+  parseNewBenefitFormulaRule,
+} from '../domain/benefit/benefit_rules.js';
+import {
+  PostgresBenefitFormulaRepository,
+  type BenefitFormulaRepository,
+  type FormulaVariableRepository,
+} from './benefit_formula_repository.js';
 import { openApiDocument } from './openapi.js';
 
 interface BenefitCalculationBody {
   sbm?: unknown;
   grado?: unknown;
   granInvalidez?: unknown;
+  beneficiaryType?: unknown;
+  beneficiary?: unknown;
 }
 
 class ValidationError extends Error {
@@ -21,8 +32,18 @@ class ValidationError extends Error {
   }
 }
 
-export function createApp(): express.Express {
+interface CreateAppOptions {
+  formulaRepository?: BenefitFormulaRepository;
+  variableRepository?: FormulaVariableRepository;
+}
+
+export function createApp(options: CreateAppOptions = {}): express.Express {
   const app = express();
+  const fallbackRepository = options.formulaRepository !== undefined && options.variableRepository !== undefined
+    ? undefined
+    : new PostgresBenefitFormulaRepository();
+  const formulaRepository = options.formulaRepository ?? fallbackRepository!;
+  const variableRepository = options.variableRepository ?? fallbackRepository!;
 
   app.use(express.json());
 
@@ -37,12 +58,85 @@ export function createApp(): express.Express {
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
-  app.post('/api/benefits/calculate', (request: Request, response: Response, next: NextFunction) => {
+  app.get('/api/benefits/rules', async (_request: Request, response: Response, next: NextFunction) => {
+    try {
+      const rules = await formulaRepository.listRules();
+
+      response.status(200).json(rules);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post('/api/benefits/rules', async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const variables = await variableRepository.listVariables();
+      const rule = parseNewBenefitFormulaRule(request.body, variables);
+      const savedRule = await formulaRepository.addRule(rule);
+
+      response.status(201).json(savedRule);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete('/api/benefits/rules/:id', async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const deleted = await formulaRepository.deleteRule(request.params.id);
+
+      if (!deleted) {
+        response.status(404).json({
+          error: {
+            code: 'NOT_FOUND',
+            message: `formula rule not found: ${request.params.id}`,
+          },
+        });
+        return;
+      }
+
+      response.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get('/api/benefits/formula-variables', async (_request: Request, response: Response, next: NextFunction) => {
+    try {
+      const variables = await variableRepository.listVariables();
+
+      response.status(200).json(variables);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post('/api/benefits/formula-variables', async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const variable = parseFormulaVariable(request.body);
+      const existingVariables = await variableRepository.listVariables();
+      const exists = existingVariables.some(
+        (candidate) => candidate.variableName === variable.variableName,
+      );
+      const savedVariable = await variableRepository.upsertVariable(variable);
+
+      response.status(exists ? 200 : 201).json(savedVariable);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post('/api/benefits/calculate', async (request: Request, response: Response, next: NextFunction) => {
     try {
       const body = parseBenefitCalculationBody(request.body as BenefitCalculationBody);
-      const result = calcularBeneficio(body.sbm, body.grado, {
+      const rules = await formulaRepository.listRules();
+      const variables = await variableRepository.listVariables();
+      const result = calcularBeneficioConReglas({
+        sbm: body.sbm,
+        grado: body.grado,
         granInvalidez: body.granInvalidez,
-      });
+        beneficiaryType: body.beneficiaryType,
+        beneficiary: body.beneficiary,
+      }, rules, variables);
 
       response.status(200).json(result);
     } catch (error) {
@@ -61,6 +155,8 @@ function parseBenefitCalculationBody(body: BenefitCalculationBody): {
   sbm: number;
   grado: number;
   granInvalidez?: boolean;
+  beneficiaryType?: string;
+  beneficiary?: Record<string, unknown>;
 } {
   if (body === null || typeof body !== 'object') {
     throw new ValidationError('request body must be a JSON object');
@@ -86,10 +182,23 @@ function parseBenefitCalculationBody(body: BenefitCalculationBody): {
     throw new ValidationError('granInvalidez must be a boolean');
   }
 
+  if (body.beneficiaryType !== undefined && typeof body.beneficiaryType !== 'string') {
+    throw new ValidationError('beneficiaryType must be a string');
+  }
+
+  if (
+    body.beneficiary !== undefined
+    && (body.beneficiary === null || typeof body.beneficiary !== 'object' || Array.isArray(body.beneficiary))
+  ) {
+    throw new ValidationError('beneficiary must be an object');
+  }
+
   return {
     sbm: body.sbm,
     grado: body.grado,
     granInvalidez: body.granInvalidez,
+    beneficiaryType: body.beneficiaryType,
+    beneficiary: body.beneficiary as Record<string, unknown> | undefined,
   };
 }
 

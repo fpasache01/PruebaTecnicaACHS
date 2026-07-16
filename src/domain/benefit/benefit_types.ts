@@ -10,6 +10,8 @@ export interface BenefitCalculationInput {
   sbm: number;
   grado: number;
   granInvalidez?: boolean;
+  beneficiaryType?: string;
+  beneficiary?: Record<string, unknown>;
 }
 
 export interface OpcionesCalculo {
