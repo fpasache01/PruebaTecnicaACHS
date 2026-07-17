@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "pruebatecnicaachs_devcontainer-postgres-1",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "username": "achs",
+            "name": "achstest",
+            "database": "achs_benefits"
+        }
+    ]
+}
