@@ -1,0 +1,846 @@
+{
+  "total": 54,
+  "rdn": [
+    {
+      "id": "APLICA-RETENCION-001",
+      "ruleType": "DECISION",
+      "formulaName": "APLICA-RETENCION-001",
+      "description": "Aplicación de Retenciones Judiciales y Otras",
+      "formula": "0",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC-ASIGFAM-001",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC-ASIGFAM-001",
+      "description": "Cálculo de Asignación Familiar",
+      "formula": "tramo_asignacion_familiar",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC-FIN-001",
+      "ruleType": "MAPPING",
+      "formulaName": "CALC-FIN-001",
+      "description": "Cálculo de Prorrata de Concurrencia",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_CALC-FIN-001",
+        "default": 0
+      }
+    },
+    {
+      "id": "CALC-MANT-001",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC-MANT-001",
+      "description": "Reajuste de Pensiones por Variación del IPC",
+      "formula": "pension * (1 + ipc)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC-MANT-002",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC-MANT-002",
+      "description": "Principio de No Detrimento en Reevaluación de Pensiones",
+      "formula": "max(pension, pension_base)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC-MANT-003",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC-MANT-003",
+      "description": "Acrecimiento de Pensiones de Sobrevivencia",
+      "formula": "sum(pensiones)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC-OTG-002",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC-OTG-002",
+      "description": "Cálculo de Pensiones de Sobrevivencia",
+      "formula": "sbp",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "concepto": "Sueldo base para pension"
+      }
+    },
+    {
+      "id": "CALC-OTG-003",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC-OTG-003",
+      "description": "Composición de Monto Final de Pensión",
+      "formula": "pension_base + incremento_art41",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "conceptos": [
+          {
+            "rdnRef": "CALC-OTG-002",
+            "sign": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "CALC-OTG-004",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC-OTG-004",
+      "description": "Cálculo de Bono por Matrimonio",
+      "formula": "pension * 24",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC-OTG-005",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC-OTG-005",
+      "description": "Cálculo de Monto de Indemnización Global",
+      "formula": "sbp * factor",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC-REP-001",
+      "ruleType": "MAPPING",
+      "formulaName": "CALC-REP-001",
+      "description": "Cálculo de Capital Representativo para GRIS R01",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_CALC-REP-001",
+        "default": 0
+      }
+    },
+    {
+      "id": "CALC-REP-002",
+      "ruleType": "MAPPING",
+      "formulaName": "CALC-REP-002",
+      "description": "Cálculo de Monto Total de Indemnización para GRIS R03",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_CALC-REP-002",
+        "default": 0
+      }
+    },
+    {
+      "id": "CALC-REP-003",
+      "ruleType": "MAPPING",
+      "formulaName": "CALC-REP-003",
+      "description": "Agregación de Costos de Salud para GRIS R05",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_CALC-REP-003",
+        "default": 0
+      }
+    },
+    {
+      "id": "CALC-REP-004",
+      "ruleType": "MAPPING",
+      "formulaName": "CALC-REP-004",
+      "description": "Determinación del Tipo de Pensión para GRIS R02",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_CALC-REP-004",
+        "default": 0
+      }
+    },
+    {
+      "id": "CALC_PIM_001",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PIM_001",
+      "description": "Cálculo de Bonificación de Viudez (Ley N°19.403)",
+      "formula": "sbp * 0.7",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PIM_002",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PIM_002",
+      "description": "Cálculo de Bonificación Ley N°19.539",
+      "formula": "sbp * 0.35",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PIM_003",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PIM_003",
+      "description": "Cálculo de Bonificación Ley N°19.953",
+      "formula": "sbp * 0.05 * max(0, hijos - 2)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PIM_004",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PIM_004",
+      "description": "Cálculo de Suplemento por Gran Invalidez",
+      "formula": "monto_base * 0.30",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PIM_005",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PIM_005",
+      "description": "Cálculo de Incremento por Hijo para Asignación Familiar",
+      "formula": "monto_base + incremento_art41 + suplemento_gi",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PLI_001",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PLI_001",
+      "description": "Cálculo de Descuento Legal de Salud",
+      "formula": "round(imponible * 0.07)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PLI_003",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PLI_003",
+      "description": "Cálculo del Haber por Asignación Familiar",
+      "formula": "round(imponible * 0.10)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PLI_004",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PLI_004",
+      "description": "Asignación de Pensión Garantizada Universal (PGU)",
+      "formula": "max(0, minimo + estandar - pension)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PLI_006",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PLI_006",
+      "description": "Aplicar Beneficio de Rebaja de Salud",
+      "formula": "round(imponible * tasa_fondo)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PLI_009",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PLI_009",
+      "description": "Cálculo Proporcional por Días de Vigencia en Mes de Cese",
+      "formula": "round(imponible * comision_afp)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PLI_010",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PLI_010",
+      "description": "Cálculo de Monto Pagado en Exceso por Cese Retroactivo",
+      "formula": "round(monto)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PLI_011",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PLI_011",
+      "description": "Aplicar Ajustes Manuales Pendientes a Liquidación",
+      "formula": "pension - cotizaciones - descuentos",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PLI_012",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PLI_012",
+      "description": "Redondeo de Monto Final",
+      "formula": "round(monto, 0)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CALC_PLI_013",
+      "ruleType": "FORMULA",
+      "formulaName": "CALC_PLI_013",
+      "description": "Aplicación del Tope Legal del 100% para Sobrevivencia",
+      "formula": "min(monto, tope)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "CICLO-CESE-001",
+      "ruleType": "DECISION",
+      "formulaName": "CICLO-CESE-001",
+      "description": "Cese de Pensión de Sobrevivencia por Nuevo Vínculo",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "edad < 65",
+        "result": {
+          "estado": "VIGENTE"
+        }
+      }
+    },
+    {
+      "id": "CICLO-CESE-002",
+      "ruleType": "DECISION",
+      "formulaName": "CICLO-CESE-002",
+      "description": "Cese de Pensión de Invalidez por Edad Legal de Vejez",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "vinculo_vigente = true",
+        "result": {
+          "estado": "VIGENTE"
+        }
+      }
+    },
+    {
+      "id": "COMM-MANT-001",
+      "ruleType": "EFFECT",
+      "formulaName": "COMM-MANT-001",
+      "description": "Notificación de Próximo Cese de Pensión por Edad Legal",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "event": "COMM-MANT-001_EJECUTADO",
+        "targetState": "REGISTRADO",
+        "audit": true
+      }
+    },
+    {
+      "id": "CUMP-OTG-001",
+      "ruleType": "DECISION",
+      "formulaName": "CUMP-OTG-001",
+      "description": "Plazo Máximo para Pago de Indemnización",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "grado >= 15",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "CUMP-OTG-002",
+      "ruleType": "DECISION",
+      "formulaName": "CUMP-OTG-002",
+      "description": "Plazo Máximo para el Pago de Primeras Mensualidades de Invalidez",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "estado = ACTIVA",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "CUMP-OTG-003",
+      "ruleType": "DECISION",
+      "formulaName": "CUMP-OTG-003",
+      "description": "Plazo Máximo Pago Pensión Sobrevivencia",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "dias <= plazo",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "CUMP-OTG-005",
+      "ruleType": "DECISION",
+      "formulaName": "CUMP-OTG-005",
+      "description": "Plazo de Prescripción para Cobro Retroactivo de Pensión de Sobrevivencia",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "fecha <= fecha_limite",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "DESC-LEG-002",
+      "ruleType": "FORMULA",
+      "formulaName": "DESC-LEG-002",
+      "description": "Cálculo de Descuento de Previsión (AFP)",
+      "formula": "round(imponible * tasa_afp)",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {}
+    },
+    {
+      "id": "FIN-001",
+      "ruleType": "MAPPING",
+      "formulaName": "FIN-001",
+      "description": "Prescripción de Cobro de Reembolso",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_FIN-001",
+        "default": 0
+      }
+    },
+    {
+      "id": "FIN-002-001",
+      "ruleType": "MAPPING",
+      "formulaName": "FIN-002-001",
+      "description": "Periodicidad del Cobro de Concurrencia",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_FIN-002-001",
+        "default": 0
+      }
+    },
+    {
+      "id": "FIN-002-002",
+      "ruleType": "MAPPING",
+      "formulaName": "FIN-002-002",
+      "description": "Validación de Monto Cobrable por Concurrencia",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_FIN-002-002",
+        "default": 0
+      }
+    },
+    {
+      "id": "FIN-003-001",
+      "ruleType": "MAPPING",
+      "formulaName": "FIN-003-001",
+      "description": "Validación de Prescripción de Deuda de Concurrencia",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_FIN-003-001",
+        "default": 0
+      }
+    },
+    {
+      "id": "MAP-REP-002",
+      "ruleType": "MAPPING",
+      "formulaName": "MAP-REP-002",
+      "description": "Homologación de Prestaciones de Salud a Catálogo GRIS",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_MAP-REP-002",
+        "default": 0
+      }
+    },
+    {
+      "id": "MAP-REP-003",
+      "ruleType": "MAPPING",
+      "formulaName": "MAP-REP-003",
+      "description": "Homologación de Causa de Origen para GRIS R02",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "mappingName": "MAP_MAP-REP-003",
+        "default": 0
+      }
+    },
+    {
+      "id": "VALID-ACUERDO-001",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-ACUERDO-001",
+      "description": "Vigencia de mandato para cobro",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "acuerdo_valido = true",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "VALID-ACUERDO-002",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-ACUERDO-002",
+      "description": "Validación de Pago Directo a Causante",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "acuerdo_vigente = true",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "VALID-ACUERDO-003",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-ACUERDO-003",
+      "description": "Límite Máximo de Retención Judicial sobre Prestación Económica",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "retencion <= 50",
+        "result": {
+          "estado": "CONFORME",
+          "errorCode": "EXCESO_PAGO"
+        }
+      }
+    },
+    {
+      "id": "VALID-EMP-001",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-EMP-001",
+      "description": "Verificación de Entidad Pública y Ley 19.345",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "empleador_afiliado = true",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "VALID-LEGAL-001",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-LEGAL-001",
+      "description": "Validación de Requisitos para Título Ejecutivo",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "marco_vigente = true",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "VALID-MANT-001",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-MANT-001",
+      "description": "Validación de Plazo para Presentación de Certificado de Alumno Regular (Orfandad)",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "vigencia_ok = true",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "VALID-MANT-002",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-MANT-002",
+      "description": "Bloqueo de Reevaluación en Gran Invalidez",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "revision_ok = true",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "VALID-OTG-001",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-OTG-001",
+      "description": "Verificación de Cotizaciones al Día (Trabajadores Independientes)",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "requisitos = true",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "VALID-OTG-002",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-OTG-002",
+      "description": "Impide Pensión Transitoria para Funcionarios Públicos",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "no_duplicado = true",
+        "result": {
+          "estado": "CONFORME",
+          "errorCode": "RECHAZADO_DUPLICADO"
+        }
+      }
+    },
+    {
+      "id": "VALID-PAGO-001",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-PAGO-001",
+      "description": "Determinación de Responsabilidad de Pago de Aguinaldo",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "beneficiario_valido = true",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "VALID-PAGO-002",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-PAGO-002",
+      "description": "Elegibilidad para Bono de Invierno",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "pago_autorizado = true",
+        "result": {
+          "estado": "CONFORME"
+        }
+      }
+    },
+    {
+      "id": "VALID-SOBREV-001",
+      "ruleType": "DECISION",
+      "formulaName": "VALID-SOBREV-001",
+      "description": "Validación de Elegibilidad de Madre de Hijos del Causante",
+      "formula": "",
+      "enabled": true,
+      "beneficiaryType": "WORKER",
+      "periodicity": null,
+      "benefitType": "NINGUNO",
+      "conditions": {},
+      "action": {
+        "expr": "beneficiarios > 0",
+        "result": {
+          "estado": "CONFORME",
+          "errorCode": "SOBREVIVENCIA_SIN_BENEFICIARIOS"
+        }
+      }
+    }
+  ]
+}

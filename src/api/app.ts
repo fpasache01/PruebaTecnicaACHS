@@ -5,6 +5,7 @@ import express, {
   type Response,
 } from 'express';
 import swaggerUi from 'swagger-ui-express';
+import { Pool } from 'pg';
 import { calcularBeneficioConReglas } from '../domain/benefit/benefit_engine.js';
 import {
   parseFormulaVariable,
@@ -16,6 +17,10 @@ import {
   type FormulaVariableRepository,
 } from './benefit_formula_repository.js';
 import { openApiDocument } from './openapi.js';
+import { calcularPrestacion } from '../domain/ppee/ppee_engine.js';
+import { PpeeIndicadoresPostgres, type PpeeIndicadores } from '../domain/ppee/ppee_indicators.js';
+import { PpeeError } from '../domain/ppee/ppee_errors.js';
+import type { EntradaPrestacion } from '../domain/ppee/ppee_types.js';
 
 interface BenefitCalculationBody {
   sbm?: unknown;
@@ -35,6 +40,7 @@ class ValidationError extends Error {
 interface CreateAppOptions {
   formulaRepository?: BenefitFormulaRepository;
   variableRepository?: FormulaVariableRepository;
+  ppeeIndicadores?: PpeeIndicadores;
 }
 
 export function createApp(options: CreateAppOptions = {}): express.Express {
@@ -144,6 +150,28 @@ export function createApp(options: CreateAppOptions = {}): express.Express {
     }
   });
 
+  app.post('/api/ppee/calculate', async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const entrada = request.body as EntradaPrestacion;
+      if (entrada === null || typeof entrada !== 'object') {
+        throw new ValidationError('request body must be a JSON object');
+      }
+      let indicadores = options.ppeeIndicadores;
+      if (indicadores === undefined) {
+        const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+        try {
+          indicadores = await PpeeIndicadoresPostgres.cargar(pool);
+        } finally {
+          await pool.end();
+        }
+      }
+      const result = calcularPrestacion(entrada, indicadores);
+      response.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.use(errorHandler);
 
   return app;
@@ -215,6 +243,16 @@ function errorHandler(
 
   if (error instanceof ValidationError || error instanceof RangeError) {
     response.status(400).json(validationErrorResponse(error.message));
+    return;
+  }
+
+  if (error instanceof PpeeError) {
+    response.status(400).json({
+      error: {
+        code: error.code,
+        message: error.message,
+      },
+    });
     return;
   }
 

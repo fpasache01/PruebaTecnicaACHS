@@ -1,0 +1,1183 @@
+{
+  "meta": {
+    "documento": "Golden DataSet - PEC",
+    "total": 267,
+    "conformes": 151,
+    "noConformes": 116,
+    "porSeccion": {
+      "IND": {
+        "total": 20,
+        "pasa": 19
+      },
+      "PEN": {
+        "total": 52,
+        "pasa": 25
+      },
+      "SOB": {
+        "total": 23,
+        "pasa": 12
+      },
+      "ERR": {
+        "total": 2,
+        "pasa": 1
+      },
+      "FR": {
+        "total": 20,
+        "pasa": 17
+      },
+      "SBP": {
+        "total": 25,
+        "pasa": 16
+      },
+      "NEG": {
+        "total": 20,
+        "pasa": 16
+      },
+      "REC": {
+        "total": 15,
+        "pasa": 14
+      },
+      "SOBE": {
+        "total": 15,
+        "pasa": 0
+      },
+      "TEC": {
+        "total": 15,
+        "pasa": 15
+      },
+      "PENE": {
+        "total": 20,
+        "pasa": 6
+      },
+      "REGI": {
+        "total": 16,
+        "pasa": 10
+      },
+      "AGR": {
+        "total": 14,
+        "pasa": 0
+      },
+      "NRM": {
+        "total": 10,
+        "pasa": 0
+      }
+    },
+    "marcoNormativo": "MN-TEST-16744-BASE",
+    "freezeTime": "2026-06-15",
+    "fecha": "2026-08-11T21:33:04.200Z"
+  },
+  "desviacionesConocidas": {
+    "D2_GI_100_vs_7030": {
+      "descripcion": "Gran Invalidez: casos NEGOCIO CM-03 tratan el 100% como imponible vs decision D2 (70% imponible + 30% auxilio no imponible)",
+      "casos": [
+        "GDS-CM-03",
+        "GDS-CM-03-V-ART41"
+      ]
+    },
+    "D3_factor_continuo": {
+      "descripcion": "Factor indemnizacion: casos QA FR-002/003/007/010/011 y SBP-* usan formula continua vs decision D3 (tabla discreta)",
+      "casos": []
+    }
+  },
+  "seccionesPendientes": [
+    {
+      "seccion": "AGR",
+      "descripcion": "Seccion QA/adversarial con semantica especifica aun no cubierta por el pipeline (0/14 conformes)"
+    },
+    {
+      "seccion": "NRM",
+      "descripcion": "Seccion QA/adversarial con semantica especifica aun no cubierta por el pipeline (0/10 conformes)"
+    },
+    {
+      "seccion": "SOBE",
+      "descripcion": "Seccion QA/adversarial con semantica especifica aun no cubierta por el pipeline (0/15 conformes)"
+    },
+    {
+      "seccion": "PENE",
+      "descripcion": "Seccion QA/adversarial con semantica especifica aun no cubierta por el pipeline (6/20 conformes)"
+    }
+  ],
+  "casosNoConformes": [
+    {
+      "id": "GDS-CM-04-V-SIL",
+      "seccion": "IND",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "tipoPrestacion correcto: INDEMNIZACION_GLOBAL",
+        "criterio \"Sueldo base (SBP/PBC) = $615.165 (± $1)\": 615441 != 615165 (±1)",
+        "criterio \"Monto indemnización = $5.536.485 (± $1)\": 5538969 != 5536485 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-03",
+      "seccion": "PEN",
+      "tipo": "PENSION_GRAN_INVALIDEZ",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_GRAN_INVALIDEZ",
+        "criterio \"Sueldo base (SBP/PBC) = $1.000.000 (± $1)\": 1000000 ok",
+        "criterio \"Líquido del mes = $824.200 (± $1)\": 876940 != 824200 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-03-V-ART41",
+      "seccion": "PEN",
+      "tipo": "PENSION_GRAN_INVALIDEZ",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_GRAN_INVALIDEZ",
+        "criterio \"Sueldo base (SBP/PBC) = $1.000.000 (± $1)\": 1000000 ok",
+        "criterio \"Líquido del mes = $947.830 (± $1)\": 1000570 != 947830 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-09-V03",
+      "seccion": "PEN",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_PARCIAL",
+        "criterio \"Sueldo base (SBP/PBC) = $548.411 (± $1)\": 551434 != 548411 (±1)",
+        "criterio \"Líquido del mes = $158.201 (± $1)\": 159073 != 158201 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V06",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $200.000 (± $1)\": 200000 ok",
+        "criterio \"Líquido del mes = $163.505 (± $1)\": 98904 != 163505 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V07",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $180.000 (± $1)\": 180000 ok",
+        "criterio \"Líquido del mes = $163.505 (± $1)\": 82420 != 163505 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V08",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $220.000 (± $1)\": 220000 ok",
+        "criterio \"Líquido del mes = $190.753 (± $1)\": 355362 != 190753 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V09",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $388.070 (± $1)\": 577896 != 388070 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V10",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $378.690 (± $1)\": 577896 != 378690 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V14",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $343.468 (± $1)\": 346164 != 343468 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V15",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $375.564 (± $1)\": 346164 != 375564 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V16",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $390.600 (± $1)\": 346164 != 390600 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V17",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $390.600 (± $1)\": 346164 != 390600 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V18",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $136.164 (± $1)\": 346164 != 136164 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V20",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $306.164 (± $1)\": 346164 != 306164 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V21",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $527.896 (± $1)\": 346164 != 527896 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V22",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $334.164 (± $1)\": 346164 != 334164 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V23",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $321.164 (± $1)\": 346164 != 321164 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V24",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $328.164 (± $1)\": 346164 != 328164 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V25",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $341.164 (± $1)\": 346164 != 341164 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-10-V26",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $346.988 (± $1)\": 120530 != 346988 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-11-V04",
+      "seccion": "PEN",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_PARCIAL",
+        "criterio \"Sueldo base (SBP/PBC) = $800.000 (± $1)\": 800000 ok",
+        "criterio \"Neto primer pago = $415.484 (± $1)\": 840000 != 415484 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-11-V05",
+      "seccion": "PEN",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_PARCIAL",
+        "criterio \"Sueldo base (SBP/PBC) = $800.000 (± $1)\": 800000 ok",
+        "criterio \"Neto primer pago = $875.000 (± $1)\": 840000 != 875000 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-11-V06",
+      "seccion": "PEN",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "error esperado DEUDA_EXCESO, obtenido DEUDA"
+      ]
+    },
+    {
+      "id": "GDS-CM-STRESS-HABERES-DESC",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $250.000 (± $1)\": 250000 ok",
+        "criterio \"Líquido del mes = $416.847 (± $1)\": 341486 != 416847 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-STRESS-ISAPRE",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $600.000 (± $1)\": 600000 ok",
+        "criterio \"Líquido del mes = $232.245 (± $1)\": 343266 != 232245 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-STRESS-PENSION-ANTIGUA",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $2.800.000 (± $1)\": 2800000 ok",
+        "criterio \"Líquido del mes = $1.656.985 (± $1)\": 1597596 != 1656985 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-STRESS-PENSION-NUEVA",
+      "seccion": "PEN",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_TOTAL",
+        "criterio \"Sueldo base (SBP/PBC) = $2.901.031 (± $1)\": 2901031 ok",
+        "criterio \"Líquido del mes = $1.451.927 (± $1)\": 1656054 != 1451927 (±1)",
+        "criterio \"Neto primer pago = $1.839.760 (± $1)\": 2098413 != 1839760 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-07-V-PRESENTACION-TARDIA",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $763.790 (± $1)\": 668345 != 763790 (±1)",
+        "criterio \"Beneficiario C1 = $267.327 (± $1)\": 233921 != 267327 (±1)",
+        "criterio \"Líquido del mes = $218.486 (± $1)\": 191184 != 218486 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-CM-07-V01",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $559.496 (± $1)\": 559496 ok",
+        "criterio \"Beneficiario C1 = $234.988 (± $1)\": 234988 ok",
+        "criterio \"Líquido del mes = $193.677 (± $1)\": 193677 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-07-V07",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $589.059 (± $1)\": 589059 ok",
+        "criterio \"Beneficiario C1 = $206.171 (± $1)\": 206171 ok",
+        "criterio \"Beneficiario H1 = $82.468 (± $1)\": 82468 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-07-V08",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $589.059 (± $1)\": 589059 ok",
+        "criterio \"Beneficiario C1 = $206.171 (± $1)\": 206171 ok",
+        "criterio \"Beneficiario H1 = $82.468 (± $1)\": 82468 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-07-V13",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $567.089 (± $1)\": 567089 ok",
+        "criterio \"Beneficiario C1 = $198.481 (± $1)\": 198481 ok",
+        "criterio \"Líquido del mes = $163.588 (± $1)\": 163588 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-07B",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $559.496 (± $1)\": 559496 ok",
+        "criterio \"Beneficiario MHN = $163.186 (± $1)\": 163186 ok",
+        "criterio \"Beneficiario C1 = $97.912 (± $1)\": 97912 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-08",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $421.801 (± $1)\": 602573 != 421801 (±1)",
+        "criterio \"Beneficiario C1 = $210.901 (± $1)\": 210901 ok",
+        "criterio \"Beneficiario H1 = $84.360 (± $1)\": 84360 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-08-V01",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $401.187 (± $1)\": 573124 != 401187 (±1)",
+        "criterio \"Beneficiario C1 = $200.594 (± $1)\": 200594 ok",
+        "criterio \"Beneficiario H1 = $80.237 (± $1)\": 80237 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-08-V02",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $421.801 (± $1)\": 602573 != 421801 (±1)",
+        "criterio \"Beneficiario C1 = $210.901 (± $1)\": 210901 ok",
+        "criterio \"Beneficiario H1 = $70.300 (± $1)\": 70300 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-08-V03",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $421.801 (± $1)\": 602573 != 421801 (±1)",
+        "criterio \"Beneficiario MHN = $175.750 (± $1)\": 175750 ok",
+        "criterio \"Beneficiario C1 = $105.450 (± $1)\": 105450 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-STRESS-SOB-DENSE",
+      "seccion": "SOB",
+      "tipo": "PENSION_SOBREVIVENCIA",
+      "motivos": [
+        "tipoPrestacion correcto: PENSION_SOBREVIVENCIA",
+        "criterio \"Sueldo base (SBP/PBC) = $559.496 (± $1)\": 559496 ok",
+        "criterio \"Beneficiario MHN = $130.549 (± $1)\": 130549 ok",
+        "criterio \"Beneficiario C1 = $130.549 (± $1)\": 130549 ok"
+      ]
+    },
+    {
+      "id": "GDS-CM-05-V01",
+      "seccion": "ERR",
+      "tipo": "NINGUNO",
+      "error": "REIP_BAJO_UMBRAL",
+      "motivos": [
+        "caso de rechazo devolvio error REIP_BAJO_UMBRAL"
+      ]
+    },
+    {
+      "id": "GDS-FR-003",
+      "seccion": "FR",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "tipoPrestacion correcto: INDEMNIZACION_GLOBAL",
+        "criterio \"montoIndemnizacion == $960.088 (±$1)\": 940610 != 960088 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-FR-007",
+      "seccion": "FR",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "tipoPrestacion correcto: INDEMNIZACION_GLOBAL",
+        "criterio \"montoIndemnizacion == $6.425.204 (±$1)\": 5643657 != 6425204 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-FR-011",
+      "seccion": "FR",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "tipoPrestacion correcto: INDEMNIZACION_GLOBAL",
+        "criterio \"montoIndemnizacion == $10.117.850 (±$1)\": 9406095 != 10117850 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-SBP-001",
+      "seccion": "SBP",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $595.390 (±$1)\": 606643 != 595390 (±1)",
+        "criterio \"montoIndemnizacion == $6.251.595 (±$1)\": 6369752 != 6251595 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-SBP-002",
+      "seccion": "SBP",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $609.679 (±$1)\": 621202 != 609679 (±1)",
+        "criterio \"montoIndemnizacion == $6.401.630 (±$1)\": 6522621 != 6401630 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-SBP-003",
+      "seccion": "SBP",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $619.452 (±$1)\": NaN != 619452 (±1)",
+        "criterio \"montoIndemnizacion == $6.504.246 (±$1)\": NaN != 6504246 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-SBP-004",
+      "seccion": "SBP",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $615.441 (±$1)\": 627073 != 615441 (±1)",
+        "criterio \"montoIndemnizacion == $6.462.131 (±$1)\": 6584267 != 6462131 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-SBP-005",
+      "seccion": "SBP",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "monto_indem: 6584256 != 6462131"
+      ]
+    },
+    {
+      "id": "GDS-SBP-010",
+      "seccion": "SBP",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"montoIndemnizacion == $6.462.131 (±$50)\": 6584267 != 6462131 (±50)"
+      ]
+    },
+    {
+      "id": "GDS-SBP-017",
+      "seccion": "SBP",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"montoIndemnizacion == $5.605.842 (±$1)\": 5114820 != 5605842 (±1)"
+      ]
+    },
+    {
+      "id": "GDS-SBP-021",
+      "seccion": "SBP",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"deudaTrabajador == $537.869 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-SBP-024",
+      "seccion": "SBP",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NEG-004",
+      "seccion": "NEG",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_REIP_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_REIP_INVALIDO (porcentaje invalido: N/A)"
+      ]
+    },
+    {
+      "id": "GDS-NEG-005",
+      "seccion": "NEG",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_REIP_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_REIP_INVALIDO (porcentaje invalido: N/A)"
+      ]
+    },
+    {
+      "id": "GDS-NEG-011",
+      "seccion": "NEG",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_REIP_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_REIP_INVALIDO (porcentaje invalido: N/A)"
+      ]
+    },
+    {
+      "id": "GDS-NEG-012",
+      "seccion": "NEG",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_REIP_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_REIP_INVALIDO (porcentaje invalido: N/A)"
+      ]
+    },
+    {
+      "id": "GDS-REC-010",
+      "seccion": "REC",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "neto_primer_pago: sin valor en motor (esperado 4462131)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-001",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-002",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-003",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-004",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-005",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-006",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-007",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-008",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-009",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-010",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-011",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-012",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-013",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-014",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-SOBE-015",
+      "seccion": "SOBE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-PENE-001",
+      "seccion": "PENE",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "criterio \"devengado == $215.404 (±$1)\": no se pudo mapear a salida",
+        "criterio \"líquido == $177.537 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-PENE-002",
+      "seccion": "PENE",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "criterio \"devengado == $107.702 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-PENE-003",
+      "seccion": "PENE",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "criterio \"devengado == $7.180 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-PENE-004",
+      "seccion": "PENE",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "criterio \"devengado == $215.404 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-PENE-007",
+      "seccion": "PENE",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "criterio \"neto == $165.404 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-PENE-008",
+      "seccion": "PENE",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "criterio \"neto == $115.404 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-PENE-009",
+      "seccion": "PENE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-PENE-010",
+      "seccion": "PENE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-PENE-011",
+      "seccion": "PENE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-PENE-012",
+      "seccion": "PENE",
+      "tipo": "PENSION_PARCIAL",
+      "motivos": [
+        "criterio \"pensionTotal == $246.176 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-PENE-015",
+      "seccion": "PENE",
+      "tipo": "PENSION_TOTAL",
+      "motivos": [
+        "criterio \"pensión == $461.581 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-PENE-018",
+      "seccion": "PENE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-PENE-019",
+      "seccion": "PENE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-PENE-020",
+      "seccion": "PENE",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-REGI-005",
+      "seccion": "REGI",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $600.410 (±$1)\": 600410 ok",
+        "criterio \"montoINDEM == $900.615 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-REGI-006",
+      "seccion": "REGI",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $600.410 (±$1)\": 600410 ok",
+        "criterio \"montoINDEM == $9.870.740 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-REGI-009",
+      "seccion": "REGI",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $723.575 (±$1)\": 723575 ok",
+        "criterio \"montoINDEM == $1.085.363 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-REGI-010",
+      "seccion": "REGI",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $723.575 (±$1)\": 723575 ok",
+        "criterio \"montoINDEM == $11.895.573 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-REGI-013",
+      "seccion": "REGI",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $670.014 (±$1)\": 670014 ok",
+        "criterio \"montoINDEM == $1.005.021 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-REGI-014",
+      "seccion": "REGI",
+      "tipo": "INDEMNIZACION_GLOBAL",
+      "motivos": [
+        "criterio \"SBP == $670.014 (±$1)\": 670014 ok",
+        "criterio \"montoINDEM == $11.014.030 (±$1)\": no se pudo mapear a salida"
+      ]
+    },
+    {
+      "id": "GDS-AGR-001",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-002",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-003",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-004",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-005",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-006",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-007",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-008",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-009",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-010",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-011",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-012",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-013",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-AGR-014",
+      "seccion": "AGR",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-001",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-002",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-003",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-004",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-005",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-006",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-007",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-008",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-009",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    },
+    {
+      "id": "GDS-NRM-010",
+      "seccion": "NRM",
+      "tipo": "RECHAZADA",
+      "error": "ERROR_TIPO_INVALIDO",
+      "motivos": [
+        "error inesperado: ERROR_TIPO_INVALIDO (no se pudo determinar el tipo de prestacion)"
+      ]
+    }
+  ]
+}

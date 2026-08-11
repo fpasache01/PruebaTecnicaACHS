@@ -196,6 +196,39 @@ export const openApiDocument = {
         },
       },
     },
+    '/api/ppee/calculate': {
+      post: {
+        summary: 'Calculate a PPEE benefit (pipeline M1/M2/M3/M3R)',
+        description:
+          'Ejecuta el pipeline canonico del manual v1.9 (SBP, determinacion del beneficio, liquidacion y cuadro de primer pago). Devuelve montos, tipo, error tipado y evidencia.',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/PpeeCalculationRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Resultado del pipeline PPEE.',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/PpeeCalculationResult' },
+              },
+            },
+          },
+          '400': {
+            description: 'Error tipado de negocio.',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
+    },
     '/openapi.json': {
       get: {
         summary: 'OpenAPI document',
@@ -330,6 +363,64 @@ export const openApiDocument = {
               message: { type: 'string', example: 'formula references unknown variable: cargas' },
             },
           },
+        },
+      },
+      PpeeCalculationRequest: {
+        type: 'object',
+        properties: {
+          tipoPrestacion: { type: 'string', example: 'Pensión de invalidez parcial' },
+          reip: { type: 'number', example: 55 },
+          granInvalidez: { type: 'boolean', example: false },
+          fechaInicioIncapacidad: { type: 'string', example: '2024-02-21' },
+          fechaInicioPension: { type: 'string', example: '2026-03-01' },
+          fechaCalculo: { type: 'string', example: '2026-03-31' },
+          fechaFallecimiento: { type: 'string', example: '2025-09-18' },
+          periodoReip: { type: 'string', example: '2026-03' },
+          sbpForzado: { type: 'number', example: 900000 },
+          sbpCalculado: { type: 'number', example: 615441 },
+          pensionBaseForzada: { type: 'number', example: 420000 },
+          hijos: { type: 'number', example: 0 },
+          afp: { type: 'string', example: 'MODELO' },
+          rentas: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                periodo: { type: 'string', example: '2024-08' },
+                imponible: { type: 'number', example: 550000 },
+                dias: { type: 'number', example: 30 },
+                regimen: { type: 'string', example: 'AFP_STD' },
+              },
+            },
+          },
+        },
+      },
+      PpeeCalculationResult: {
+        type: 'object',
+        properties: {
+          tipoPrestacion: { type: 'string' },
+          estado: { type: 'string' },
+          errorCode: { type: 'string' },
+          sbp: { type: 'number' },
+          montoMensual: { type: 'number' },
+          pensionBase: { type: 'number' },
+          montoIndemnizacion: { type: 'number' },
+          liquido: { type: 'number' },
+          netoPrimerPago: { type: 'number' },
+          clasificacionPrimerPago: { type: 'string' },
+          cuadro: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                periodo: { type: 'string' },
+                devengado: { type: 'number' },
+                pagadoPrevio: { type: 'number' },
+                saldo: { type: 'number' },
+              },
+            },
+          },
+          evidencia: { type: 'object' },
         },
       },
     },

@@ -42,7 +42,10 @@ export class PostgresBenefitFormulaRepository implements BenefitFormulaRepositor
         beneficiary_type,
         periodicity,
         benefit_type,
-        conditions
+        conditions,
+        rule_type,
+        action,
+        description
       FROM benefit_formulas
       ORDER BY priority ASC, id ASC
     `);
@@ -62,9 +65,11 @@ export class PostgresBenefitFormulaRepository implements BenefitFormulaRepositor
           beneficiary_type,
           periodicity,
           benefit_type,
-          conditions
+          conditions,
+          rule_type,
+          action
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9, $10::jsonb)
         RETURNING
           id::text,
           formula_name,
@@ -74,7 +79,10 @@ export class PostgresBenefitFormulaRepository implements BenefitFormulaRepositor
           beneficiary_type,
           periodicity,
           benefit_type,
-          conditions
+          conditions,
+          rule_type,
+          action,
+          description
       `,
       [
         parsedRule.formulaName,
@@ -85,6 +93,8 @@ export class PostgresBenefitFormulaRepository implements BenefitFormulaRepositor
         parsedRule.periodicity,
         parsedRule.benefitType,
         JSON.stringify(parsedRule.conditions),
+        parsedRule.ruleType ?? 'FORMULA',
+        JSON.stringify(parsedRule.action ?? {}),
       ],
     );
 
@@ -209,6 +219,9 @@ interface BenefitFormulaRow {
   periodicity: Periodicidad;
   benefit_type: TipoBeneficio;
   conditions: BenefitFormulaConditions;
+  rule_type?: string;
+  action?: Record<string, unknown> | null;
+  description?: string | null;
 }
 
 interface FormulaVariableRow {
@@ -230,6 +243,9 @@ function rowToFormulaRule(row: BenefitFormulaRow): BenefitFormulaRule {
     periodicity: row.periodicity,
     benefitType: row.benefit_type,
     conditions: row.conditions,
+    ruleType: (row.rule_type ?? 'FORMULA') as BenefitFormulaRule['ruleType'],
+    action: row.action ?? undefined,
+    description: row.description ?? undefined,
   }, undefined, { validateFormula: false });
 }
 

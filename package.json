@@ -5,6 +5,13 @@
   "type": "module",
   "scripts": {
     "db:migrate": "tsx src/api/migrate.ts",
+    "db:setup": "npm run db:migrate && npm run seed:indicators && npm run seed:rdn",
+    "extract:golden": "tsx scripts/extract_golden.ts",
+    "calibrate:indicators": "tsx scripts/calibrate_indicators.ts",
+    "build:rdn-seed": "tsx scripts/build_rdn_seed.ts",
+    "seed:indicators": "tsx scripts/seed_indicators.ts",
+    "seed:rdn": "tsx scripts/seed_rdn.ts",
+    "run:golden": "tsx scripts/run_golden.ts",
     "dev": "tsx src/api/server.ts",
     "test": "vitest run",
     "test:watch": "vitest",

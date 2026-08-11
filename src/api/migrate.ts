@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Pool } from 'pg';
@@ -10,12 +10,19 @@ if (databaseUrl === undefined || databaseUrl.trim() === '') {
 }
 
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
-const migrationPath = join(currentDirectory, 'migrations', '001_dynamic_formula_rules.sql');
-const sql = await readFile(migrationPath, 'utf8');
+const migrationsDirectory = join(currentDirectory, 'migrations');
+const migrationFiles = (await readdir(migrationsDirectory))
+  .filter((file) => file.endsWith('.sql'))
+  .sort();
+
 const pool = new Pool({ connectionString: databaseUrl });
 
 try {
-  await pool.query(sql);
+  for (const file of migrationFiles) {
+    const sql = await readFile(join(migrationsDirectory, file), 'utf8');
+    await pool.query(sql);
+    console.log(`Applied migration: ${file}`);
+  }
   console.log('Database migrations applied');
 } finally {
   await pool.end();

@@ -3,3 +3,7 @@ coverage/
 dist/
 .vitest/
 .pnpm-store/
+/sdd/dominio
+/sdd/dominio/procesos
+/sdd/dominio/procesos/PAG
+/sdd/dominio/procesos/PAG

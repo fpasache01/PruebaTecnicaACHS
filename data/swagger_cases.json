@@ -1,0 +1,400 @@
+{
+  "descripcion": "Casos para probar en Swagger derivados de las RDN en sdd/dominio/reglas/. El esperado es el valor del documento RDN, no la salida del motor. Si el motor devuelve otro valor, la diferencia es una desviación que debe trazarse.",
+  "casos": [
+    {
+      "id": "OTG005-01",
+      "rdn": "CALC-OTG-005",
+      "nombre": "Indemnización 15% — borde inferior exacto de la tabla",
+      "descripcion": "REIP 15.0% → factor 1.5 sueldos (punto exacto de tabla). SBM $500.000 → $750.000.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 500000, "grado": 15.0, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "INDEMNIZACION", "monto": 750000, "periodicidad": "UNICO" }
+    },
+    {
+      "id": "OTG005-02",
+      "rdn": "CALC-OTG-005",
+      "nombre": "Indemnización 26% — NO es punto exacto de tabla → $0",
+      "descripcion": "REIP 26% no coincide con ningún punto de la tabla discreta (15.0, 17.5, 20.0, … 37.5). La RDN dice «por defecto: retornar 0». Si el motor devuelve factor 7.5 (tomando el rango 25-27.5), se marca como desviación D3.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 500000, "grado": 26.0, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "NINGUNO", "monto": 0, "periodicidad": null }
+    },
+    {
+      "id": "OTG005-03",
+      "rdn": "CALC-OTG-005",
+      "nombre": "Indemnización 37.5% — último punto de la tabla",
+      "descripcion": "REIP 37.5% → factor 15 sueldos. SBM $600.000 → $9.000.000.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 600000, "grado": 37.5, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "INDEMNIZACION", "monto": 9000000, "periodicidad": "UNICO" }
+    },
+    {
+      "id": "OTG005-04",
+      "rdn": "CALC-OTG-005",
+      "nombre": "Indemnización 39.9% — borde superior de la tabla",
+      "descripcion": "REIP 39.9% → factor 15 sueldos (último tramo). SBM $700.000 → $10.500.000.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 700000, "grado": 39.9, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "INDEMNIZACION", "monto": 10500000, "periodicidad": "UNICO" }
+    },
+    {
+      "id": "OTG005-05",
+      "rdn": "CALC-OTG-005",
+      "nombre": "Indemnización 40% — cruza a pensión (fuera del rango de indem)",
+      "descripcion": "REIP 40% sale del rango de indemnización (15-39.9%). Debe clasificar como pensión parcial.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 700000, "grado": 40.0, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "PENSION_PARCIAL", "monto": 245000, "periodicidad": "MENSUAL" }
+    },
+    {
+      "id": "OTG003-01",
+      "rdn": "CALC-OTG-003",
+      "nombre": "Pensión parcial 40% — borde inferior",
+      "descripcion": "SBP $800.000, REIP 40% → 35% del SBP = $280.000. Sin hijos, tope 50% no se alcanza.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 800000, "grado": 40.0, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "PENSION_PARCIAL", "monto": 280000, "periodicidad": "MENSUAL" }
+    },
+    {
+      "id": "OTG003-02",
+      "rdn": "CALC-OTG-003",
+      "nombre": "Pensión parcial 69.9% — borde superior antes de total",
+      "descripcion": "SBP $800.000, REIP 69.9% → 35% = $280.000. Sigue siendo parcial.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 800000, "grado": 69.9, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "PENSION_PARCIAL", "monto": 280000, "periodicidad": "MENSUAL" }
+    },
+    {
+      "id": "OTG003-03",
+      "rdn": "CALC-OTG-003",
+      "nombre": "Pensión total 70% — borde inferior de total",
+      "descripcion": "SBP $800.000, REIP 70% → 70% = $560.000. 2 hijos no activan Art. 41.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 800000, "grado": 70.0, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "PENSION_TOTAL", "monto": 560000, "periodicidad": "MENSUAL" }
+    },
+    {
+      "id": "OTG003-04",
+      "rdn": "CALC-OTG-003",
+      "nombre": "Pensión total 100% — borde superior",
+      "descripcion": "SBP $800.000, REIP 100% → 70% del SBP = $560.000.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 800000, "grado": 100.0, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "PENSION_TOTAL", "monto": 560000, "periodicidad": "MENSUAL" }
+    },
+    {
+      "id": "OTG003-05",
+      "rdn": "CALC-OTG-003",
+      "nombre": "Pensión parcial por debajo de la mínima",
+      "descripcion": "SBP $200.000, REIP 40% → 35% = $70.000. La RDN dice que se ajusta a la pensión mínima ($180.000). Si el motor devuelve $70.000 no está aplicando la mínima.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 200000, "grado": 40.0, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "PENSION_PARCIAL", "monto": 180000, "periodicidad": "MENSUAL" }
+    },
+    {
+      "id": "PIM004-01",
+      "rdn": "CALC_PIM_004",
+      "nombre": "Suplemento Gran Invalidez 30% sobre base",
+      "descripcion": "Pensión invalidez $400.000 con dictamen GI vigente y grado ≥ 70% → suplemento 30% = $120.000. No imponible, se suma al líquido.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de gran invalidez",
+        "reip": 75,
+        "granInvalidez": true,
+        "sbpForzado": 400000,
+        "fechaInicioPension": "2025-11-01",
+        "fechaCalculo": "2025-11-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO"
+      },
+      "esperado": { "pensionImponible": 280000, "auxilioGi": 120000, "montoMensual": 400000 }
+    },
+    {
+      "id": "PIM004-02",
+      "rdn": "CALC_PIM_004",
+      "nombre": "Gran invalidez: grado < 70 → suplemento $0",
+      "descripcion": "Grado 65% no califica como gran invalidez (mínimo 70%). El suplemento debe ser $0.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de gran invalidez",
+        "reip": 65,
+        "granInvalidez": true,
+        "sbpForzado": 500000,
+        "fechaInicioPension": "2025-11-01",
+        "fechaCalculo": "2025-11-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO"
+      },
+      "esperado": { "auxilioGi": 0, "tipoPrestacion": "PENSION_TOTAL" }
+    },
+    {
+      "id": "OTG002-01",
+      "rdn": "CALC-OTG-002",
+      "nombre": "Sobrevivencia: viuda sola sin hijos → 60%",
+      "descripcion": "Causante pensión base $500.000. Viuda de 50 años, sin hijos. Monto: $500.000 × 60% = $300.000. Nota: el motor actual requiere pasar porcentajes explícitos (no deriva 60% de tipo + sin hijos).",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de sobrevivencia",
+        "pbcForzado": 500000,
+        "fechaFallecimiento": "2025-09-18",
+        "fechaInicioPension": "2025-09-18",
+        "fechaCalculo": "2025-10-31",
+        "afp": "MODELO",
+        "beneficiarios": [
+          { "id": "C1", "tipo": "CONYUGE", "porcentajeNominal": 60, "porcentajeEfectivo": 60 }
+        ]
+      },
+      "esperado": { "tipoPrestacion": "PENSION_SOBREVIVENCIA", "beneficiarioC1": 300000, "montoMensual": 300000 }
+    },
+    {
+      "id": "OTG002-02",
+      "rdn": "CALC-OTG-002",
+      "nombre": "Sobrevivencia: viuda 50% + 2 hijos 15% (sin tope de orfandad)",
+      "descripcion": "PBC $500.000. Viuda 50% + hijo1 15% + hijo2 15% = 80%. Orfandad con cónyuge tope 50, hijos suman 30 → no se activa. Viuda $250.000, cada hijo $75.000.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de sobrevivencia",
+        "pbcForzado": 500000,
+        "fechaFallecimiento": "2025-09-18",
+        "fechaInicioPension": "2025-09-18",
+        "fechaCalculo": "2025-10-31",
+        "afp": "MODELO",
+        "beneficiarios": [
+          { "id": "C1", "tipo": "CONYUGE", "porcentajeNominal": 50, "porcentajeEfectivo": 50 },
+          { "id": "H1", "tipo": "HIJO", "porcentajeNominal": 15, "porcentajeEfectivo": 15 },
+          { "id": "H2", "tipo": "HIJO", "porcentajeNominal": 15, "porcentajeEfectivo": 15 }
+        ]
+      },
+      "esperado": { "tipoPrestacion": "PENSION_SOBREVIVENCIA", "beneficiarioC1": 250000, "beneficiarioH1": 75000, "beneficiarioH2": 75000 }
+    },
+    {
+      "id": "OTG002-03",
+      "rdn": "CALC-OTG-002",
+      "nombre": "Sobrevivencia: tope de orfandad con cónyuge (hijos exceden 50%)",
+      "descripcion": "PBC $500.000. Viuda 50% + 5 hijos 15% c/u. Hijos suman 75% → tope orfandad con cónyuge 50%. Factor 50/75 = 0.667. Cada hijo 15 × 0.667 = 10%. Viuda 50%, total 100%. Viuda $250.000, cada hijo $50.000.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de sobrevivencia",
+        "pbcForzado": 500000,
+        "fechaFallecimiento": "2025-09-18",
+        "fechaInicioPension": "2025-09-18",
+        "fechaCalculo": "2025-10-31",
+        "afp": "MODELO",
+        "beneficiarios": [
+          { "id": "C1", "tipo": "CONYUGE", "porcentajeNominal": 50, "porcentajeEfectivo": 50 },
+          { "id": "H1", "tipo": "HIJO", "porcentajeNominal": 15, "porcentajeEfectivo": 15 },
+          { "id": "H2", "tipo": "HIJO", "porcentajeNominal": 15, "porcentajeEfectivo": 15 },
+          { "id": "H3", "tipo": "HIJO", "porcentajeNominal": 15, "porcentajeEfectivo": 15 },
+          { "id": "H4", "tipo": "HIJO", "porcentajeNominal": 15, "porcentajeEfectivo": 15 },
+          { "id": "H5", "tipo": "HIJO", "porcentajeNominal": 15, "porcentajeEfectivo": 15 }
+        ]
+      },
+      "esperado": { "tipoPrestacion": "PENSION_SOBREVIVENCIA", "beneficiarioC1": 250000, "beneficiarioH1": 50000 }
+    },
+    {
+      "id": "PLI013-01",
+      "rdn": "CALC_PLI_013",
+      "nombre": "Art. 50: prorrata general cuando la suma excede 100%",
+      "descripcion": "PBC $500.000. Cónyuge 50% + Madre 30% + 2 hijos 15% c/u = 110%. Tope orfandad no aplica (hijos 30 < 50). Art. 50: factor 100/110 = 0.90909. Cónyuge 50 × 0.90909 = 45.45% → $227.273. El orden correcto es tope de orfandad primero, luego Art. 50.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de sobrevivencia",
+        "pbcForzado": 500000,
+        "fechaFallecimiento": "2025-09-18",
+        "fechaInicioPension": "2025-09-18",
+        "fechaCalculo": "2025-10-31",
+        "afp": "MODELO",
+        "beneficiarios": [
+          { "id": "C1", "tipo": "CONYUGE", "porcentajeNominal": 50, "porcentajeEfectivo": 50 },
+          { "id": "M1", "tipo": "MADRE", "porcentajeNominal": 30, "porcentajeEfectivo": 30 },
+          { "id": "H1", "tipo": "HIJO", "porcentajeNominal": 15, "porcentajeEfectivo": 15 },
+          { "id": "H2", "tipo": "HIJO", "porcentajeNominal": 15, "porcentajeEfectivo": 15 }
+        ]
+      },
+      "esperado": { "tipoPrestacion": "PENSION_SOBREVIVENCIA", "beneficiarioC1": 227273 }
+    },
+    {
+      "id": "PLI001-01",
+      "rdn": "CALC_PLI_001",
+      "nombre": "Descuento legal de salud FONASA 7%",
+      "descripcion": "Haber imponible $500.000, FONASA, sin exenciones → descuento 7% = $35.000. Cotización estándar sin rebajas.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de invalidez total",
+        "reip": 72,
+        "sbpForzado": 714286,
+        "pensionBaseForzada": 500000,
+        "fechaInicioPension": "2024-06-01",
+        "fechaCalculo": "2024-06-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO"
+      },
+      "esperado": { "tipoPrestacion": "PENSION_TOTAL", "descuentoSalud": 35000, "liquido": 412100 }
+    },
+    {
+      "id": "PLI003-01",
+      "rdn": "CALC_PLI_003",
+      "nombre": "Descuento fondo de pensiones 10% sobre base imponible",
+      "descripcion": "Haber imponible $500.000 → fondo 10% = $50.000. AFP no exento, régimen estándar.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de invalidez total",
+        "reip": 72,
+        "sbpForzado": 714286,
+        "pensionBaseForzada": 500000,
+        "fechaInicioPension": "2024-06-01",
+        "fechaCalculo": "2024-06-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO"
+      },
+      "esperado": { "tipoPrestacion": "PENSION_TOTAL", "descuentoFondo": 50000 }
+    },
+    {
+      "id": "PLI001-02",
+      "rdn": "CALC_PLI_001",
+      "nombre": "Descuento salud con exención por edad (rebaja total)",
+      "descripcion": "Beneficiario 68 años, exención total de salud. El descuento debe ser $0.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de invalidez total",
+        "reip": 72,
+        "sbpForzado": 428572,
+        "pensionBaseForzada": 300000,
+        "fechaInicioPension": "2024-06-01",
+        "fechaCalculo": "2024-06-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO",
+        "planSalud": "FONASA"
+      },
+      "esperado": { "tipoPrestacion": "PENSION_TOTAL", "descuentoSalud": 0, "liquido": 247260 }
+    },
+    {
+      "id": "PLI009-01",
+      "rdn": "CALC_PLI_009",
+      "nombre": "Prorrateo por días de vigencia en mes de cese",
+      "descripcion": "Pensión $300.000, cese el día 15 de un mes de 30 días → 15/30 × $300.000 = $150.000 a pagar en el último mes.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de invalidez total",
+        "reip": 72,
+        "sbpForzado": 428572,
+        "pensionBaseForzada": 300000,
+        "fechaInicioPension": "2026-04-15",
+        "fechaCalculo": "2026-04-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO"
+      },
+      "esperado": { "tipoPrestacion": "PENSION_TOTAL", "netoPrimerPago": 160000 }
+    },
+    {
+      "id": "PLI004-01",
+      "rdn": "CALC_PLI_004",
+      "nombre": "PGU: complemento cuando la pensión es menor que la PGU base",
+      "descripcion": "Beneficiario 67 años, pensión $150.000, PGU base $206.173. Complemento = $206.173 − $150.000 = $56.173. La PGU es haber no imponible.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de invalidez total",
+        "reip": 72,
+        "sbpForzado": 214286,
+        "pensionBaseForzada": 150000,
+        "fechaInicioPension": "2024-06-01",
+        "fechaCalculo": "2024-06-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO",
+        "edad": 67
+      },
+      "esperado": { "tipoPrestacion": "PENSION_TOTAL", "liquido": 355293 }
+    },
+    {
+      "id": "PLI004-02",
+      "rdn": "CALC_PLI_004",
+      "nombre": "PGU: pensión superior a la base → sin complemento",
+      "descripcion": "Beneficiario elegible, pensión $250.000 > PGU base $206.173. Complemento $0. El líquido es solo post-cotizaciones.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de invalidez total",
+        "reip": 72,
+        "sbpForzado": 357143,
+        "pensionBaseForzada": 250000,
+        "fechaInicioPension": "2024-06-01",
+        "fechaCalculo": "2024-06-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO",
+        "edad": 67
+      },
+      "esperado": { "tipoPrestacion": "PENSION_TOTAL", "liquido": 206050 }
+    },
+    {
+      "id": "RET001-01",
+      "rdn": "APLICA-RETENCION-001",
+      "nombre": "Retención judicial 25% — dentro del tope 50%",
+      "descripcion": "Haber imponible $420.000, retención 25% = $105.000. Tope 50% del haber ($210.000) no se alcanza.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de invalidez total",
+        "reip": 72,
+        "sbpForzado": 600000,
+        "pensionBaseForzada": 420000,
+        "fechaInicioPension": "2024-06-01",
+        "fechaCalculo": "2024-06-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO",
+        "descuentos": { "retencionesJudiciales": [25] }
+      },
+      "esperado": { "tipoPrestacion": "PENSION_TOTAL", "liquido": 241164 }
+    },
+    {
+      "id": "RET001-02",
+      "rdn": "APLICA-RETENCION-001",
+      "nombre": "Retención judicial 60% → se topa al 50% del haber",
+      "descripcion": "Haber $420.000, retención solicitada 60% = $252.000. Tope legal 50% = $210.000. Acumulado con dos retenciones de 30% se topa a $210.000 → líquido $136.164.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Pensión de invalidez total",
+        "reip": 72,
+        "sbpForzado": 600000,
+        "pensionBaseForzada": 420000,
+        "fechaInicioPension": "2024-06-01",
+        "fechaCalculo": "2024-06-30",
+        "pensionYaConstituida": true,
+        "afp": "MODELO",
+        "descuentos": { "retencionesJudiciales": [30, 30] }
+      },
+      "esperado": { "tipoPrestacion": "PENSION_TOTAL", "liquido": 136164 }
+    },
+    {
+      "id": "CUMP001-01",
+      "rdn": "CUMP-OTG-001",
+      "nombre": "Elegibilidad: REIP bajo 15% → denegado",
+      "descripcion": "REIP 14.9% no alcanza el umbral mínimo de 15%. Sin derecho a prestación permanente.",
+      "endpoint": "POST /api/benefits/calculate",
+      "body": { "sbm": 1000000, "grado": 14.9, "beneficiaryType": "WORKER" },
+      "esperado": { "tipoBeneficio": "NINGUNO", "monto": 0, "periodicidad": null }
+    },
+    {
+      "id": "CUMP001-02",
+      "rdn": "CUMP-OTG-001",
+      "nombre": "Elegibilidad: REIP 0% → denegado",
+      "descripcion": "REIP 0% → sin secuela. Código esperado: REIP_BAJO_UMBRAL.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": { "reip": 0 },
+      "esperado": { "tipoPrestacion": "NINGUNO", "errorCode": "REIP_BAJO_UMBRAL" }
+    },
+    {
+      "id": "OTG001-01",
+      "rdn": "CALC-OTG-001",
+      "nombre": "SBP desde rentas: depuración D.L. 3501 + reajuste IPC al ancla de incapacidad",
+      "descripcion": "Una renta de $700.000 (30 días, AFP_STD) en mayo 2025. Depurado = 700.000 / 1.1757 = $595.390. Sin reajuste porque el ancla es el mismo mes. SBP esperado = $595.390 con piso IMNR $340.988 no aplicado.",
+      "endpoint": "POST /api/ppee/calculate",
+      "body": {
+        "tipoPrestacion": "Indemnización global",
+        "reip": 30,
+        "fechaCalculo": "2025-05-31",
+        "rentas": [
+          { "periodo": "2025-05", "imponible": 700000, "dias": 30, "regimen": "AFP_STD" }
+        ]
+      },
+      "esperado": { "tipoPrestacion": "INDEMNIZACION_GLOBAL", "sbp": 595390, "montoIndemnizacion": 6251595 }
+    }
+  ]
+}

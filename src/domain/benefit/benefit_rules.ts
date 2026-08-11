@@ -8,6 +8,24 @@ import type {
 
 export type FormulaDataType = 'numeric' | 'boolean' | 'text';
 
+export type RuleType = 'FORMULA' | 'DECISION' | 'COMPOSITE' | 'MAPPING' | 'EFFECT';
+
+export interface RuleAction {
+  formula?: string;
+  expr?: string;
+  result?: {
+    estado?: string;
+    bloqueo?: boolean;
+    errorCode?: string;
+  };
+  conceptos?: Array<{ rdnRef: string; sign: 1 | -1 }>;
+  mappingName?: string;
+  default?: unknown;
+  event?: string;
+  targetState?: string;
+  audit?: boolean;
+}
+
 export interface FormulaVariable {
   variableName: string;
   dataType: FormulaDataType;
@@ -20,6 +38,18 @@ export interface BenefitFormulaConditions {
   gradoMin?: number;
   gradoMaxExclusive?: number;
   granInvalidez?: boolean;
+  tipoPrestacion?: string;
+  edadMin?: number;
+  edadMax?: number;
+  afiliacionSalud?: string;
+  tramoMin?: number;
+  tramoMax?: number;
+  estado?: string;
+  hijos?: number;
+  estadoCivil?: string;
+  esIndependiente?: boolean;
+  regimenPrevisional?: string;
+  beneficiarioTipo?: string;
 }
 
 export interface NewBenefitFormulaRule {
@@ -31,11 +61,16 @@ export interface NewBenefitFormulaRule {
   periodicity: Periodicidad;
   benefitType: TipoBeneficio;
   conditions: BenefitFormulaConditions;
+  ruleType?: RuleType;
+  action?: RuleAction;
+  description?: string;
 }
 
 export interface BenefitFormulaRule extends NewBenefitFormulaRule {
   id: string;
 }
+
+const RULE_TYPES = new Set<RuleType>(['FORMULA', 'DECISION', 'COMPOSITE', 'MAPPING', 'EFFECT']);
 
 const BENEFIT_TYPES = new Set<TipoBeneficio>([
   'INDEMNIZACION',
@@ -47,6 +82,7 @@ const BENEFIT_TYPES = new Set<TipoBeneficio>([
 const PERIODICITIES = new Set<Periodicidad>(['UNICO', 'MENSUAL', null]);
 const DATA_TYPES = new Set<FormulaDataType>(['numeric', 'boolean', 'text']);
 const RESERVED_WORDS = new Set(['case', 'when', 'then', 'else', 'end']);
+const ALLOWED_FUNCTIONS = new Set(['round', 'min', 'max', 'sum', 'count']);
 
 export const DEFAULT_FORMULA_VARIABLES: readonly FormulaVariable[] = [
   {
@@ -61,28 +97,28 @@ export const DEFAULT_FORMULA_VARIABLES: readonly FormulaVariable[] = [
     dataType: 'numeric',
     source: 'calculation_input.grado',
     enabled: true,
-    description: 'Incapacity percentage',
+    description: 'Porcentaje de incapacidad',
   },
   {
     variableName: 'gran_invalidez',
     dataType: 'boolean',
     source: 'calculation_input.granInvalidez',
     enabled: true,
-    description: 'Whether gran invalidez applies',
+    description: 'Si aplica gran invalidez',
   },
   {
     variableName: 'factor',
     dataType: 'numeric',
     source: 'matched_formula.factor',
     enabled: true,
-    description: 'Formula-specific factor',
+    description: 'Factor de la formula',
   },
 ];
 
 export const DEFAULT_BENEFIT_FORMULAS: readonly BenefitFormulaRule[] = [
   {
     id: 'no-benefit',
-    formulaName: 'No benefit below 15%',
+    formulaName: 'Sin beneficio por incapacidad menor a 15%',
     priority: 100,
     formula: '0',
     enabled: true,
@@ -96,7 +132,7 @@ export const DEFAULT_BENEFIT_FORMULAS: readonly BenefitFormulaRule[] = [
   },
   ...FACTORES_INDEMNIZACION.map((factor, index): BenefitFormulaRule => ({
     id: `indemnity-factor-${String(factor.desde).replace('.', '-')}`,
-    formulaName: `Indemnity factor from ${factor.desde}%`,
+    formulaName: `Factor de indemnización desde ${factor.desde}%`,
     priority: 110 + index,
     formula: `sbm * ${factor.factor}`,
     enabled: true,
@@ -110,7 +146,7 @@ export const DEFAULT_BENEFIT_FORMULAS: readonly BenefitFormulaRule[] = [
   })),
   {
     id: 'partial-pension',
-    formulaName: 'Partial disability pension',
+    formulaName: 'Pensión de invalidez parcial',
     priority: 200,
     formula: 'sbm * 0.35',
     enabled: true,
@@ -124,7 +160,7 @@ export const DEFAULT_BENEFIT_FORMULAS: readonly BenefitFormulaRule[] = [
   },
   {
     id: 'total-pension-gran-invalidez',
-    formulaName: 'Total disability pension with gran invalidez',
+    formulaName: 'Pensión de invalidez total con gran invalidez',
     priority: 290,
     formula: 'sbm * 1',
     enabled: true,
@@ -138,7 +174,7 @@ export const DEFAULT_BENEFIT_FORMULAS: readonly BenefitFormulaRule[] = [
   },
   {
     id: 'total-pension',
-    formulaName: 'Total disability pension',
+    formulaName: 'Pensión de invalidez total',
     priority: 300,
     formula: 'sbm * 0.7',
     enabled: true,
@@ -176,6 +212,196 @@ export function calculateBenefitFromFormulaRules(
   };
 }
 
+export interface BenefitRuleResult {
+  tipoBeneficio: TipoBeneficio;
+  monto: number;
+  periodicidad: Periodicidad;
+  estado?: string;
+  errorCode?: string;
+  reglaAplicada?: string;
+}
+
+export interface ContextoDecision {
+  conditions: Record<string, unknown>;
+  beneficiary?: Record<string, unknown>;
+  input?: BenefitCalculationInput;
+}
+
+export function ejecutarBenefitRules(
+  input: BenefitCalculationInput,
+  rules: readonly BenefitFormulaRule[],
+  variables: readonly FormulaVariable[] = DEFAULT_FORMULA_VARIABLES,
+): BenefitRuleResult {
+  validateBenefitCalculationInput(input);
+
+  const rule = sortFormulaRules(rules)
+    .filter((candidate) => candidate.enabled)
+    .find((candidate) => matchesFormulaRule(candidate, input));
+
+  if (rule === undefined) {
+    throw new RangeError('no matching benefit formula');
+  }
+
+  const ruleType = rule.ruleType ?? 'FORMULA';
+
+  if (ruleType === 'DECISION') {
+    const decision = evaluarDecision(rule, input);
+    return {
+      tipoBeneficio: rule.benefitType,
+      monto: 0,
+      periodicidad: rule.periodicity,
+      estado: decision.estado,
+      errorCode: decision.errorCode,
+      reglaAplicada: rule.id,
+    };
+  }
+
+  if (ruleType === 'EFFECT') {
+    return {
+      tipoBeneficio: rule.benefitType,
+      monto: 0,
+      periodicidad: rule.periodicity,
+      estado: rule.action?.targetState ?? 'EJECUTADO',
+      reglaAplicada: rule.id,
+    };
+  }
+
+  if (ruleType === 'MAPPING') {
+    const contexto = resolveFormulaContext(input, rule, variables);
+    const valor = rule.action?.default ?? contexto.mappingKey ?? 0;
+    return {
+      tipoBeneficio: rule.benefitType,
+      monto: typeof valor === 'number' ? valor : 0,
+      periodicidad: rule.periodicity,
+      estado: 'MAPPED',
+      reglaAplicada: rule.id,
+    };
+  }
+
+  const variableContext = resolveFormulaContext(input, rule, variables);
+  const monto = evaluateFormula(rule.formula, variableContext, variables);
+
+  return {
+    tipoBeneficio: rule.benefitType,
+    monto,
+    periodicidad: rule.periodicity,
+    estado: 'CALCULADA',
+    reglaAplicada: rule.id,
+  };
+}
+
+function evaluarDecision(
+  rule: BenefitFormulaRule,
+  input: BenefitCalculationInput,
+): { estado?: string; errorCode?: string } {
+  const contexto: ContextoDecision = {
+    conditions: rule.conditions as unknown as Record<string, unknown>,
+    beneficiary: input.beneficiary ?? {},
+    input,
+  };
+  const expr = rule.action?.expr ?? '';
+  const resultado = evaluarExprBooleana(expr, contexto);
+  if (resultado === true) {
+    return {
+      estado: rule.action?.result?.estado ?? 'CONFORME',
+      errorCode: rule.action?.result?.errorCode,
+    };
+  }
+  return {
+    estado: 'NO_CUMPLE',
+    errorCode: rule.action?.result?.errorCode,
+  };
+}
+
+export function evaluarExprBooleana(expr: string, contexto: ContextoDecision): boolean {
+  const trimmed = expr.trim();
+  if (trimmed === '') return true;
+  const context: Record<string, number | boolean | string> = {};
+  for (const [clave, valor] of Object.entries(contexto.beneficiary ?? {})) {
+    if (typeof valor === 'number' || typeof valor === 'boolean' || typeof valor === 'string') {
+      context[clave] = valor;
+    }
+  }
+  if (typeof contexto.input?.grado === 'number') context.grado = contexto.input.grado;
+  if (contexto.input?.granInvalidez !== undefined) context.gran_invalidez = contexto.input.granInvalidez === true;
+
+  const exprNormalizada = trimmed
+    .replace(/\s*&&\s*/g, ' AND ')
+    .replace(/\s*\|\|\s*/g, ' OR ')
+    .replace(/\s*===\s*/g, ' = ')
+    .replace(/\s*==\s*/g, ' = ')
+    .replace(/\s*!=\s*/g, ' <> ')
+    .replace(/\s*<=\s*/g, ' <= ')
+    .replace(/\s*>=\s*/g, ' >= ');
+
+  const partes = exprNormalizada.split(/\s+AND\s+|\s+OR\s+/i);
+  const operadores = exprNormalizada.match(/\s+(AND|OR)\s+/gi) ?? [];
+
+  const resultados = partes.map((parte) => evaluarComparacion(parte.trim(), context));
+  let resultado = resultados[0] ?? false;
+  for (let i = 0; i < operadores.length && i + 1 < resultados.length; i += 1) {
+    const op = operadores[i].trim().toUpperCase();
+    if (op === 'AND') resultado = resultado && resultados[i + 1];
+    else resultado = resultado || resultados[i + 1];
+  }
+  return resultado;
+}
+
+function evaluarComparacion(expr: string, context: Record<string, number | boolean | string>): boolean {
+  const m = expr.match(/^(.+?)\s*(<=|>=|<>|=|<|>)\s*(.+)$/);
+  if (m === null) return Boolean(context[expr]);
+  const izquierda = resolverValor(m[1].trim(), context);
+  const derecha = resolverValor(m[3].trim(), context);
+  const op = m[2];
+  switch (op) {
+    case '<': return (izquierda as number) < (derecha as number);
+    case '>': return (izquierda as number) > (derecha as number);
+    case '<=': return (izquierda as number) <= (derecha as number);
+    case '>=': return (izquierda as number) >= (derecha as number);
+    case '=': return izquierda === derecha;
+    case '<>': return izquierda !== derecha;
+    default: return false;
+  }
+}
+
+function resolverValor(
+  token: string,
+  context: Record<string, number | boolean | string>,
+): number | string | boolean {
+  if (/^\d+(?:\.\d+)?$/.test(token)) return Number(token);
+  const sinComillas = token.replace(/^['"]|['"]$/g, '');
+  if (sinComillas !== token) return sinComillas;
+  return context[token] ?? token;
+}
+
+export function detectarOverlap(rules: readonly BenefitFormulaRule[]): Array<{
+  a: string;
+  b: string;
+  motivo: string;
+}> {
+  const habilitadas = rules.filter((rule) => rule.enabled);
+  const solapamientos: Array<{ a: string; b: string; motivo: string }> = [];
+  for (let i = 0; i < habilitadas.length; i += 1) {
+    for (let j = i + 1; j < habilitadas.length; j += 1) {
+      const a = habilitadas[i];
+      const b = habilitadas[j];
+      if (a.beneficiaryType !== b.beneficiaryType || a.benefitType !== b.benefitType) continue;
+      const minA = a.conditions.gradoMin ?? 0;
+      const maxA = a.conditions.gradoMaxExclusive ?? 100;
+      const minB = b.conditions.gradoMin ?? 0;
+      const maxB = b.conditions.gradoMaxExclusive ?? 100;
+      const solapaGrado = minA < maxB && minB < maxA;
+      const giA = a.conditions.granInvalidez;
+      const giB = b.conditions.granInvalidez;
+      const solapaGi = giA === undefined || giB === undefined || giA === giB;
+      if (solapaGrado && solapaGi) {
+        solapamientos.push({ a: a.id, b: b.id, motivo: 'condiciones de grado/granInvalidez se intersectan' });
+      }
+    }
+  }
+  return solapamientos;
+}
+
 export function sortFormulaRules(rules: readonly BenefitFormulaRule[]): BenefitFormulaRule[] {
   return [...rules].sort((left, right) => {
     if (left.priority !== right.priority) {
@@ -205,8 +431,18 @@ export function parseNewBenefitFormulaRule(
     throw new RangeError('priority must be a finite number');
   }
 
-  if (typeof candidate.formula !== 'string' || candidate.formula.trim() === '') {
+  if (candidate.ruleType !== undefined && !RULE_TYPES.has(candidate.ruleType)) {
+    throw new RangeError('ruleType must be FORMULA, DECISION, COMPOSITE, MAPPING, or EFFECT');
+  }
+
+  const ruleType = candidate.ruleType ?? 'FORMULA';
+
+  if (ruleType === 'FORMULA' && (typeof candidate.formula !== 'string' || candidate.formula.trim() === '')) {
     throw new RangeError('formula must be a non-empty string');
+  }
+
+  if (typeof candidate.formula !== 'string') {
+    throw new RangeError('formula must be a string');
   }
 
   if (typeof candidate.enabled !== 'boolean') {
@@ -226,8 +462,15 @@ export function parseNewBenefitFormulaRule(
   }
 
   const conditions = parseConditions(candidate.conditions ?? {});
-  if (options.validateFormula !== false) {
+  if (options.validateFormula !== false && ruleType === 'FORMULA') {
     validateFormulaSyntax(candidate.formula, variables);
+  }
+  if (candidate.action !== undefined && !isRuleAction(candidate.action)) {
+    throw new RangeError('action must be a valid rule action object');
+  }
+
+  if (candidate.description !== undefined && typeof candidate.description !== 'string') {
+    throw new RangeError('description must be a string');
   }
 
   return {
@@ -239,7 +482,20 @@ export function parseNewBenefitFormulaRule(
     periodicity: candidate.periodicity as Periodicidad,
     benefitType: candidate.benefitType,
     conditions,
+    ruleType,
+    action: candidate.action,
+    description: candidate.description,
   };
+}
+
+function isRuleAction(value: unknown): value is RuleAction {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
+  const action = value as RuleAction;
+  if (action.formula !== undefined && typeof action.formula !== 'string') return false;
+  if (action.expr !== undefined && typeof action.expr !== 'string') return false;
+  if (action.mappingName !== undefined && typeof action.mappingName !== 'string') return false;
+  if (action.event !== undefined && typeof action.event !== 'string') return false;
+  return true;
 }
 
 export function parseBenefitFormulaRule(
@@ -325,8 +581,12 @@ export function validateFormulaSyntax(
     throw new RangeError('formula contains forbidden SQL keyword');
   }
 
-  if (/[A-Za-z_][A-Za-z0-9_]*\s*\(/.test(normalizedFormula)) {
-    throw new RangeError('formula function calls are not allowed');
+  const functionMatches = normalizedFormula.match(/[A-Za-z_][A-Za-z0-9_]*\s*\(/g) ?? [];
+  for (const match of functionMatches) {
+    const nombre = match.replace(/[^A-Za-z0-9_]/g, '');
+    if (!ALLOWED_FUNCTIONS.has(nombre.toLowerCase())) {
+      throw new RangeError(`formula function calls are not allowed: ${nombre}`);
+    }
   }
 
   const enabledVariables = new Set(
@@ -337,6 +597,10 @@ export function validateFormulaSyntax(
 
   for (const identifier of extractIdentifiers(normalizedFormula)) {
     if (RESERVED_WORDS.has(identifier.toLowerCase())) {
+      continue;
+    }
+
+    if (ALLOWED_FUNCTIONS.has(identifier.toLowerCase())) {
       continue;
     }
 
@@ -394,10 +658,34 @@ function parseConditions(value: unknown): BenefitFormulaConditions {
     throw new RangeError('conditions.granInvalidez must be a boolean');
   }
 
+  for (const [clave, valor] of Object.entries({
+    edadMin: conditions.edadMin,
+    edadMax: conditions.edadMax,
+    tramoMin: conditions.tramoMin,
+    tramoMax: conditions.tramoMax,
+    hijos: conditions.hijos,
+  })) {
+    if (valor !== undefined && !Number.isFinite(valor)) {
+      throw new RangeError(`conditions.${clave} must be a finite number`);
+    }
+  }
+
   return {
     gradoMin: conditions.gradoMin,
     gradoMaxExclusive: conditions.gradoMaxExclusive,
     granInvalidez: conditions.granInvalidez,
+    tipoPrestacion: conditions.tipoPrestacion,
+    edadMin: conditions.edadMin,
+    edadMax: conditions.edadMax,
+    afiliacionSalud: conditions.afiliacionSalud,
+    tramoMin: conditions.tramoMin,
+    tramoMax: conditions.tramoMax,
+    estado: conditions.estado,
+    hijos: conditions.hijos,
+    estadoCivil: conditions.estadoCivil,
+    esIndependiente: conditions.esIndependiente,
+    regimenPrevisional: conditions.regimenPrevisional,
+    beneficiarioTipo: conditions.beneficiarioTipo,
   };
 }
 
@@ -444,6 +732,51 @@ function matchesFormulaRule(rule: BenefitFormulaRule, input: BenefitCalculationI
     return false;
   }
 
+  const benef = input.beneficiary ?? {};
+  if (
+    rule.conditions.tipoPrestacion !== undefined
+    && benef.tipoPrestacion !== rule.conditions.tipoPrestacion
+  ) {
+    return false;
+  }
+
+  if (
+    rule.conditions.estado !== undefined
+    && benef.estado !== rule.conditions.estado
+  ) {
+    return false;
+  }
+
+  if (
+    rule.conditions.afiliacionSalud !== undefined
+    && benef.afiliacionSalud !== rule.conditions.afiliacionSalud
+  ) {
+    return false;
+  }
+
+  if (
+    rule.conditions.regimenPrevisional !== undefined
+    && benef.regimenPrevisional !== rule.conditions.regimenPrevisional
+  ) {
+    return false;
+  }
+
+  if (rule.conditions.edadMin !== undefined && typeof benef.edad === 'number' && benef.edad < rule.conditions.edadMin) {
+    return false;
+  }
+
+  if (rule.conditions.edadMax !== undefined && typeof benef.edad === 'number' && benef.edad > rule.conditions.edadMax) {
+    return false;
+  }
+
+  if (rule.conditions.hijos !== undefined && benef.hijos !== rule.conditions.hijos) {
+    return false;
+  }
+
+  if (rule.conditions.esIndependiente !== undefined && benef.esIndependiente !== rule.conditions.esIndependiente) {
+    return false;
+  }
+
   return true;
 }
 
@@ -453,8 +786,10 @@ function resolveFormulaContext(
   variables: readonly FormulaVariable[],
 ): Record<string, number | boolean | string> {
   const context: Record<string, number | boolean | string> = {};
+  const usados = new Set(extractIdentifiers(rule.formula));
 
   for (const variable of variables.filter((candidate) => candidate.enabled)) {
+    if (!usados.has(variable.variableName)) continue;
     context[variable.variableName] = resolveVariable(variable, input, rule);
   }
 
@@ -482,8 +817,9 @@ function resolveVariable(
     return extractMultiplierFactor(rule.formula);
   }
 
-  if (variable.source.startsWith('beneficiary.')) {
-    const key = variable.source.slice('beneficiary.'.length);
+  if (variable.source.startsWith('beneficiary.') || variable.source.startsWith('ficha.')) {
+    const prefijo = variable.source.startsWith('beneficiary.') ? 'beneficiary.' : 'ficha.';
+    const key = variable.source.slice(prefijo.length);
     const value = input.beneficiary?.[key];
 
     if (value === undefined) {
@@ -491,6 +827,16 @@ function resolveVariable(
     }
 
     return value as number | boolean | string;
+  }
+
+  if (variable.source === 'prestacion.sbp' || variable.source === 'prestacion.monto') {
+    return input.sbm;
+  }
+
+  if (variable.source.startsWith('indicators.') || variable.source.startsWith('parametros.') || variable.source.startsWith('rule.')) {
+    throw new RangeError(
+      `variable source ${variable.source} requires the PPEE pipeline / rule engine context`,
+    );
   }
 
   throw new RangeError(`unsupported formula variable source: ${variable.source}`);
@@ -525,7 +871,7 @@ function tokenizeFormula(formula: string): string[] {
       continue;
     }
 
-    if (/[()+\-*/]/.test(char)) {
+    if (/[()+\-*/,]/.test(char)) {
       tokens.push(char);
       index += 1;
       continue;
@@ -615,6 +961,10 @@ class FormulaParser {
     }
 
     if (isIdentifier(token)) {
+      if (ALLOWED_FUNCTIONS.has(token.toLowerCase()) && this.peek() === '(') {
+        return this.parseFunction(token.toLowerCase());
+      }
+
       if (!(token in this.context)) {
         throw new RangeError(`formula variable is not resolved: ${token}`);
       }
@@ -633,6 +983,39 @@ class FormulaParser {
     }
 
     throw new RangeError(`formula contains invalid token: ${token}`);
+  }
+
+  private parseFunction(nombre: string): number {
+    this.consume(); // '('
+    const args: number[] = [];
+
+    if (this.peek() !== ')') {
+      args.push(this.parseExpression());
+      while (this.peek() === ',') {
+        this.consume();
+        args.push(this.parseExpression());
+      }
+    }
+
+    if (this.consume() !== ')') {
+      throw new RangeError(`formula function ${nombre} has unmatched parenthesis`);
+    }
+
+    switch (nombre) {
+      case 'round':
+        if (args.length < 1) throw new RangeError('round requires 1 argument');
+        return Math.round(args[0]);
+      case 'min':
+        return Math.min(...args);
+      case 'max':
+        return Math.max(...args);
+      case 'sum':
+        return args.reduce((a, b) => a + b, 0);
+      case 'count':
+        return args.length;
+      default:
+        throw new RangeError(`unsupported formula function: ${nombre}`);
+    }
   }
 
   private peek(): string | undefined {
@@ -669,7 +1052,12 @@ function isSupportedVariableSource(source: string): boolean {
     || source === 'calculation_input.grado'
     || source === 'calculation_input.granInvalidez'
     || source === 'matched_formula.factor'
-    || source.startsWith('beneficiary.');
+    || source.startsWith('beneficiary.')
+    || source.startsWith('ficha.')
+    || source.startsWith('prestacion.')
+    || source.startsWith('indicators.')
+    || source.startsWith('parametros.')
+    || source.startsWith('rule.');
 }
 
 function isTipoBeneficio(value: unknown): value is TipoBeneficio {
